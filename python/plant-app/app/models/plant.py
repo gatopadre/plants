@@ -15,10 +15,10 @@ class Plant(BaseModel):
         plant_data = self.dict()
         # Guardar los datos de la planta en la base de datos MongoDB
         database = MongoDB()
-        database.save_to_bd(plant_data, self.Config.__collection__)  # Pasar los datos y el nombre de la colección
+        database.save_to_bd(plant_data, self.Config.__collection__)
 
     @staticmethod
     def get_all():
         mongo = MongoDB()
-        plants = mongo.get_all_from_bd(Plant.Config.__collection__)  # Obtener todas las plantas de la colección
+        plants = mongo.get_all_from_bd(Plant.Config.__collection__)
         return plants
