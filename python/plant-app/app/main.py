@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from modules.mongoDB.mongo_conection import MongoDB
 from fastapi.middleware.cors import CORSMiddleware
+
+from .models.plant import Plant
+from .services.plant import save, get_all
 
 app = FastAPI()
 
@@ -14,29 +15,31 @@ app.add_middleware(
     allow_headers=["*"],  # Encabezados permitidos
 )
 
-# Conexión a MongoDB
-mongo = MongoDB("mongodb+srv://sebastianzunigasaavedra:Sebastian@plantapp.03vptpo.mongodb.net/?retryWrites=true&w=majority&appName=PlantAPP")
-
-# Definición del modelo de datos para la planta
-class Plant(BaseModel):
-    name: str
 
 # Ruta para la página de inicio
 @app.get("/")
 async def home():
     return {"message": "Bienvenido a la aplicación de plantas"}
 
+
 # Ruta para guardar una planta
 @app.post("/plant")
 async def save_plant(plant: Plant):
-    plant_data = {"name": plant.name}
-    mongo.save_plant(plant_data)
+    save(plant)
     return {"message": "Planta guardada correctamente"}
+
+
+# Ruta para obtener el listado de plantas
+@app.get('/plant')
+async def get_plants():
+    return {'message': 'Plantas obtenidas', 'lista_plantas': get_all()}
+
 
 # Manejo de errores 404
 @app.exception_handler(HTTPException)
 async def not_found(request, exc):
     return {"error": "No encontrado"}
+
 
 # Manejo de errores 500
 @app.exception_handler(Exception)
