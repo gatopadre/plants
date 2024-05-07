@@ -1,0 +1,7 @@
+{
+  "name": "plant-app-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
