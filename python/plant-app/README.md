@@ -7,6 +7,7 @@ pip install virtualenv
 python -m venv venv
 
 uvicorn main:app --reload
+# lo estoy corriendo desde el debugger
 
 ngrok http http://localhost:8000
 

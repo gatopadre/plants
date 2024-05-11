@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from .models.plant import Plant
-from .services.plant import save, get_all
+from .services.plant import save, get_all, get_by_id, update, delete
 
 app = FastAPI()
 
@@ -33,6 +33,40 @@ async def save_plant(plant: Plant):
 @app.get('/plant')
 async def get_plants():
     return {'message': 'Plantas obtenidas', 'lista_plantas': get_all()}
+
+
+# Ruta para obtener una planta por su ID
+@app.get("/plant/{plant_id}")
+async def get_plant_by_id(plant_id: str):
+    plant = get_by_id(plant_id)
+    if plant:
+        return plant
+    else:
+        raise HTTPException(status_code=404, detail="Planta no encontrada")
+
+
+# Ruta para actualizar una planta
+@app.put("/plant/{plant_id}")
+async def update_plant(plant_id: str, plant: Plant):
+    plant_id = str(plant_id)
+    existing_plant = get_by_id(plant_id)
+    if existing_plant:
+        update(plant)
+        return {"message": "Planta actualizada correctamente"}
+    else:
+        raise HTTPException(status_code=404, detail="Planta no encontrada")
+
+
+# Ruta para eliminar una planta por su ID
+@app.delete("/plant/{plant_id}")
+async def delete_plant(plant_id: str):
+    plant_id = str(plant_id)
+    existing_plant = get_by_id(plant_id)
+    if existing_plant:
+        delete(plant_id)
+        return {"message": "Planta eliminada correctamente"}
+    else:
+        raise HTTPException(status_code=404, detail="Planta no encontrada")
 
 
 # Manejo de errores 404
